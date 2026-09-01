@@ -107,6 +107,37 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(43, 89, 255, 0.15);
 }
 
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+.radio-option-other input[type="text"] {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.radio-option-other input[type="text"]:disabled {
+  background: #f3f4f6;
+  color: var(--muted);
+}
+
 .divider {
   border: none;
   border-top: 1px solid var(--border);

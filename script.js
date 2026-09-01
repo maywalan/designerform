@@ -8,6 +8,22 @@
   const today = new Date();
   briefDateInput.value = today.toISOString().slice(0, 10);
 
+  // "Others" format option enables its text input, and disables/clears it
+  // again if a different option is picked.
+  const formatOtherInput = document.getElementById("formatOther");
+  const formatOthersRadio = document.getElementById("formatOthersRadio");
+  document.querySelectorAll('input[name="format"]').forEach(function (radio) {
+    radio.addEventListener("change", function () {
+      const isOthers = formatOthersRadio.checked;
+      formatOtherInput.disabled = !isOthers;
+      if (isOthers) {
+        formatOtherInput.focus();
+      } else {
+        formatOtherInput.value = "";
+      }
+    });
+  });
+
   function showAlert(message, type) {
     alertBox.textContent = message;
     alertBox.className = "alert " + type;
@@ -34,6 +50,20 @@
       return;
     }
 
+    const formatChoice = document.querySelector('input[name="format"]:checked');
+    if (!formatChoice) {
+      showAlert("Please select a format.", "error");
+      return;
+    }
+    const format =
+      formatChoice.value === "Others"
+        ? formatOtherInput.value.trim()
+        : formatChoice.value;
+    if (!format) {
+      showAlert("Please specify the format.", "error");
+      return;
+    }
+
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
       showAlert(
         "This form isn't connected to the sheet yet. Set APPS_SCRIPT_URL in config.js.",
@@ -49,6 +79,7 @@
       dueDate: dueDate,
       pic: document.getElementById("pic").value,
       priority: document.getElementById("priority").value,
+      format: format,
       requesterName: document.getElementById("requesterName").value.trim(),
     };
 
@@ -73,6 +104,7 @@
       );
       form.reset();
       briefDateInput.value = new Date().toISOString().slice(0, 10);
+      formatOtherInput.disabled = true;
     } catch (err) {
       showAlert(
         "Couldn't submit the request: " + err.message,

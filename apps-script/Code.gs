@@ -16,16 +16,17 @@ var DESIGNER_TABS = {
 };
 
 // Form field -> fixed column on each designer's tab (1 = A, 2 = B, ...).
-// Columns not listed here (e.g. C, H, I) are left untouched. The PIC
-// dropdown only routes the row to the right tab (via DESIGNER_TABS) and
-// is not written to a column itself; "Requested by" fills the PIC column.
+// Columns not listed here (e.g. C, I) are left untouched. The PIC dropdown
+// only routes the row to the right tab (via DESIGNER_TABS) and is not
+// written to a column itself; "Requested by" fills the PIC column.
 var FIELD_TO_COLUMN = {
   briefDate: 1,     // A - Date assigned
   dueDate: 2,       // B - Due date
   priority: 4,      // D - Priority
   projectName: 5,   // E - Task
   details: 6,       // F - Description
-  requesterName: 7  // G - PIC
+  format: 7,        // G - Format
+  requesterName: 8  // H - PIC
 };
 
 // Priority dropdown value -> exact text written to the sheet, matching the
@@ -38,7 +39,7 @@ var PRIORITY_LABELS = {
 
 var REQUIRED_FIELDS = [
   'projectName', 'details', 'briefDate', 'dueDate',
-  'pic', 'priority', 'requesterName'
+  'pic', 'priority', 'format', 'requesterName'
 ];
 
 function doPost(e) {
@@ -70,9 +71,14 @@ function handleSubmission(data) {
     throw new Error('Unknown designer: ' + data.pic);
   }
 
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(tabName);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = findDesignerSheet(ss, tabName);
   if (!sheet) {
-    throw new Error('Sheet tab not found: "' + tabName + '". Check DESIGNER_TABS in Code.gs.');
+    var available = ss.getSheets().map(function (s) { return s.getName(); }).join(', ');
+    throw new Error(
+      'Sheet tab not found: "' + tabName + '". Check DESIGNER_TABS in Code.gs. ' +
+      'Available tabs: ' + available
+    );
   }
 
   var priorityLabel = PRIORITY_LABELS[data.priority] || data.priority;
@@ -83,9 +89,27 @@ function handleSubmission(data) {
   sheet.getRange(row, FIELD_TO_COLUMN.priority).setValue(priorityLabel);
   sheet.getRange(row, FIELD_TO_COLUMN.projectName).setValue(data.projectName);
   sheet.getRange(row, FIELD_TO_COLUMN.details).setValue(data.details);
+  sheet.getRange(row, FIELD_TO_COLUMN.format).setValue(data.format);
   sheet.getRange(row, FIELD_TO_COLUMN.requesterName).setValue(data.requesterName);
 
-  return { tab: tabName };
+  return { tab: sheet.getName() };
+}
+
+// Looks up a tab by exact name first, then falls back to a trimmed,
+// case-insensitive match so small differences (extra space, casing) in
+// DESIGNER_TABS don't break submissions.
+function findDesignerSheet(ss, tabName) {
+  var exact = ss.getSheetByName(tabName);
+  if (exact) return exact;
+
+  var target = tabName.toString().trim().toLowerCase();
+  var sheets = ss.getSheets();
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].getName().trim().toLowerCase() === target) {
+      return sheets[i];
+    }
+  }
+  return null;
 }
 
 // Appends right after the last row that actually has data in one of the

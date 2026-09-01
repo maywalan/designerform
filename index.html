@@ -28,6 +28,38 @@
           placeholder="Describe what you need, sizes/formats, references, etc."></textarea>
       </div>
 
+      <div class="field">
+        <label>Format <span class="req">*</span></label>
+        <div class="radio-group" id="formatGroup">
+          <label class="radio-option">
+            <input type="radio" name="format" value="Social media (FB, IG)" required />
+            Social media (FB, IG)
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="format" value="Email banner" />
+            Email banner
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="format" value="LINE" />
+            LINE
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="format" value="Landing page" />
+            Landing page
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="format" value="Slides" />
+            Slides
+          </label>
+          <label class="radio-option radio-option-other">
+            <input type="radio" name="format" value="Others" id="formatOthersRadio" />
+            Others:
+            <input type="text" id="formatOther" name="formatOther" placeholder="Please specify"
+              maxlength="200" disabled />
+          </label>
+        </div>
+      </div>
+
       <div class="row">
         <div class="field">
           <label for="briefDate">Brief date <span class="req">*</span></label>
