@@ -13,15 +13,17 @@ appended as a new row directly onto the assigned designer's tab in the
 |-------------------|-----------------|
 | Brief date (defaults to today, editable) | A — Date assigned |
 | Due date            | B — Due date        |
-| Priority (High/Medium/Low) | D — Priority |
+| Priority (High/Medium/Low) | D — Priority, written as "High (1-2 day)" / "Medium (3-4 day)" / "Low (5 day+)" |
 | Project name       | E — Task            |
 | Details             | F — Description     |
-| PIC (designer)      | G — PIC             |
-| Requested by (name)  | J — Requested by |
+| Requested by (name) | G — PIC             |
+| PIC (designer)      | *not written* — only selects which tab the row goes to |
 
 Columns not listed above (C, H, I, ...) are left untouched. The mapping is by
 fixed column letter (`FIELD_TO_COLUMN` in `Code.gs`) — if the sheet's layout
-changes, update the column numbers there (1 = A, 2 = B, etc.).
+changes, update the column numbers there (1 = A, 2 = B, etc.). The priority
+label text (`PRIORITY_LABELS`) must match your sheet's color/conditional
+formatting rules exactly — update it there if those labels change.
 
 ## 1. Set up the backend (Google Apps Script)
 

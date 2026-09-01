@@ -16,15 +16,24 @@ var DESIGNER_TABS = {
 };
 
 // Form field -> fixed column on each designer's tab (1 = A, 2 = B, ...).
-// Columns not listed here (e.g. C, H, I) are left untouched.
+// Columns not listed here (e.g. C, H, I) are left untouched. The PIC
+// dropdown only routes the row to the right tab (via DESIGNER_TABS) and
+// is not written to a column itself; "Requested by" fills the PIC column.
 var FIELD_TO_COLUMN = {
   briefDate: 1,     // A - Date assigned
   dueDate: 2,       // B - Due date
   priority: 4,      // D - Priority
   projectName: 5,   // E - Task
   details: 6,       // F - Description
-  pic: 7,           // G - PIC
-  requesterName: 10 // J - Requested by
+  requesterName: 7  // G - PIC
+};
+
+// Priority dropdown value -> exact text written to the sheet, matching the
+// labels the sheet's color/conditional-formatting rules key off of.
+var PRIORITY_LABELS = {
+  High: 'High (1-2 day)',
+  Medium: 'Medium (3-4 day)',
+  Low: 'Low (5 day+)'
 };
 
 var REQUIRED_FIELDS = [
@@ -66,13 +75,14 @@ function handleSubmission(data) {
     throw new Error('Sheet tab not found: "' + tabName + '". Check DESIGNER_TABS in Code.gs.');
   }
 
+  var priorityLabel = PRIORITY_LABELS[data.priority] || data.priority;
+
   var row = sheet.getLastRow() + 1;
   sheet.getRange(row, FIELD_TO_COLUMN.briefDate).setValue(data.briefDate);
   sheet.getRange(row, FIELD_TO_COLUMN.dueDate).setValue(data.dueDate);
-  sheet.getRange(row, FIELD_TO_COLUMN.priority).setValue(data.priority);
+  sheet.getRange(row, FIELD_TO_COLUMN.priority).setValue(priorityLabel);
   sheet.getRange(row, FIELD_TO_COLUMN.projectName).setValue(data.projectName);
   sheet.getRange(row, FIELD_TO_COLUMN.details).setValue(data.details);
-  sheet.getRange(row, FIELD_TO_COLUMN.pic).setValue(data.pic);
   sheet.getRange(row, FIELD_TO_COLUMN.requesterName).setValue(data.requesterName);
 
   return { tab: tabName };
