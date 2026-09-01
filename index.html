@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Designer Request Form</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <h1>Designer Request Form</h1>
+      <p>Submit a new design request. It will be added directly to the assigned designer's sheet.</p>
+    </header>
+
+    <form id="requestForm" class="card" novalidate>
+      <div id="formAlert" class="alert" hidden></div>
+
+      <div class="field">
+        <label for="projectName">Project name <span class="req">*</span></label>
+        <input type="text" id="projectName" name="projectName" required maxlength="200" />
+      </div>
+
+      <div class="field">
+        <label for="details">Details <span class="req">*</span></label>
+        <textarea id="details" name="details" rows="5" required maxlength="4000"
+          placeholder="Describe what you need, sizes/formats, references, etc."></textarea>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="briefDate">Brief date <span class="req">*</span></label>
+          <input type="date" id="briefDate" name="briefDate" required />
+        </div>
+        <div class="field">
+          <label for="dueDate">Due date <span class="req">*</span></label>
+          <input type="date" id="dueDate" name="dueDate" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="pic">PIC (Designer) <span class="req">*</span></label>
+          <select id="pic" name="pic" required>
+            <option value="" disabled selected>Select designer</option>
+            <option value="Matach (May)">Matach (May)</option>
+            <option value="Kittipat (Aun)">Kittipat (Aun)</option>
+            <option value="Apapan (Fuang)">Apapan (Fuang)</option>
+            <option value="Video Team (Dear, Gong)">Video Team (Dear, Gong)</option>
+            <option value="Rinlada (Sense)">Rinlada (Sense)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="priority">Priority <span class="req">*</span></label>
+          <select id="priority" name="priority" required>
+            <option value="" disabled selected>Select priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="row">
+        <div class="field">
+          <label for="requesterName">Requested by (name) <span class="req">*</span></label>
+          <input type="text" id="requesterName" name="requesterName" required maxlength="200" />
+        </div>
+        <div class="field">
+          <label for="requesterEmail">Requested by (email) <span class="req">*</span></label>
+          <input type="email" id="requesterEmail" name="requesterEmail" required maxlength="200" />
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="submit-btn">Submit request</button>
+    </form>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
