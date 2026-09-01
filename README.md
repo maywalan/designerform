@@ -11,18 +11,17 @@ appended as a new row directly onto the assigned designer's tab in the
 
 | Form field       | Sheet column    |
 |-------------------|-----------------|
-| Project name       | Task            |
-| Details             | Description     |
-| Brief date (defaults to today, editable) | Date assigned |
-| Due date            | Due date        |
-| PIC (designer)      | PIC             |
-| Priority (High/Medium/Low) | Priority |
-| Requested by (name)  | Requester Name (auto-added if missing) |
-| Requested by (email) | Requester Email (auto-added if missing) |
+| Brief date (defaults to today, editable) | A — Date assigned |
+| Due date            | B — Due date        |
+| Priority (High/Medium/Low) | D — Priority |
+| Project name       | E — Task            |
+| Details             | F — Description     |
+| PIC (designer)      | G — PIC             |
+| Requested by (name)  | J — Requested by |
 
-The script matches sheet columns **by header text**, not position, so column
-order on each tab doesn't matter. If a header it's looking for isn't found on
-a tab, it appends a new column automatically rather than failing.
+Columns not listed above (C, H, I, ...) are left untouched. The mapping is by
+fixed column letter (`FIELD_TO_COLUMN` in `Code.gs`) — if the sheet's layout
+changes, update the column numbers there (1 = A, 2 = B, etc.).
 
 ## 1. Set up the backend (Google Apps Script)
 

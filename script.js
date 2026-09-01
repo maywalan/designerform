@@ -50,7 +50,6 @@
       pic: document.getElementById("pic").value,
       priority: document.getElementById("priority").value,
       requesterName: document.getElementById("requesterName").value.trim(),
-      requesterEmail: document.getElementById("requesterEmail").value.trim(),
     };
 
     submitBtn.disabled = true;

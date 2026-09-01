@@ -15,24 +15,21 @@ var DESIGNER_TABS = {
   'Rinlada (Sense)': 'Rinlada (Sense)'
 };
 
-// Form field -> sheet column header text. Matching is case-insensitive and
-// ignores leading/trailing whitespace. If a header isn't found on a tab,
-// a new column is appended automatically so nothing is silently dropped.
-var FIELD_TO_HEADER = {
-  projectName: 'Task',
-  details: 'Description',
-  briefDate: 'Date assigned',
-  dueDate: 'Due date',
-  pic: 'PIC',
-  priority: 'Priority',
-  requesterName: 'Requester Name',
-  requesterEmail: 'Requester Email',
-  submittedAt: 'Submitted At'
+// Form field -> fixed column on each designer's tab (1 = A, 2 = B, ...).
+// Columns not listed here (e.g. C, H, I) are left untouched.
+var FIELD_TO_COLUMN = {
+  briefDate: 1,     // A - Date assigned
+  dueDate: 2,       // B - Due date
+  priority: 4,      // D - Priority
+  projectName: 5,   // E - Task
+  details: 6,       // F - Description
+  pic: 7,           // G - PIC
+  requesterName: 10 // J - Requested by
 };
 
 var REQUIRED_FIELDS = [
   'projectName', 'details', 'briefDate', 'dueDate',
-  'pic', 'priority', 'requesterName', 'requesterEmail'
+  'pic', 'priority', 'requesterName'
 ];
 
 function doPost(e) {
@@ -69,62 +66,16 @@ function handleSubmission(data) {
     throw new Error('Sheet tab not found: "' + tabName + '". Check DESIGNER_TABS in Code.gs.');
   }
 
-  var headers = getHeaders(sheet);
-  var rowValues = new Array(headers.length).fill('');
-
-  setField(headers, rowValues, FIELD_TO_HEADER.projectName, data.projectName);
-  setField(headers, rowValues, FIELD_TO_HEADER.details, data.details);
-  setField(headers, rowValues, FIELD_TO_HEADER.briefDate, data.briefDate);
-  setField(headers, rowValues, FIELD_TO_HEADER.dueDate, data.dueDate);
-  setField(headers, rowValues, FIELD_TO_HEADER.pic, data.pic);
-  setField(headers, rowValues, FIELD_TO_HEADER.priority, data.priority);
-  setField(headers, rowValues, FIELD_TO_HEADER.requesterName, data.requesterName);
-  setField(headers, rowValues, FIELD_TO_HEADER.requesterEmail, data.requesterEmail);
-  setField(headers, rowValues, FIELD_TO_HEADER.submittedAt, new Date());
-
-  writeHeaders(sheet, headers);
-  sheet.getRange(sheet.getLastRow() + 1, 1, 1, rowValues.length).setValues([rowValues]);
+  var row = sheet.getLastRow() + 1;
+  sheet.getRange(row, FIELD_TO_COLUMN.briefDate).setValue(data.briefDate);
+  sheet.getRange(row, FIELD_TO_COLUMN.dueDate).setValue(data.dueDate);
+  sheet.getRange(row, FIELD_TO_COLUMN.priority).setValue(data.priority);
+  sheet.getRange(row, FIELD_TO_COLUMN.projectName).setValue(data.projectName);
+  sheet.getRange(row, FIELD_TO_COLUMN.details).setValue(data.details);
+  sheet.getRange(row, FIELD_TO_COLUMN.pic).setValue(data.pic);
+  sheet.getRange(row, FIELD_TO_COLUMN.requesterName).setValue(data.requesterName);
 
   return { tab: tabName };
-}
-
-// Reads row 1 of the tab and drops trailing blank cells, so new columns
-// get appended right after the last real header instead of leaving gaps.
-function getHeaders(sheet) {
-  var lastCol = Math.max(sheet.getLastColumn(), 1);
-  var headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-  while (headers.length && !headers[headers.length - 1]) {
-    headers.pop();
-  }
-  return headers;
-}
-
-function writeHeaders(sheet, headers) {
-  if (headers.length) {
-    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-  }
-}
-
-// Mutates headers/rowValues in place: fills the existing column for
-// headerName, or appends a new column (in both arrays) if it isn't found.
-function setField(headers, rowValues, headerName, value) {
-  var idx = findHeaderIndex(headers, headerName);
-  if (idx === -1) {
-    headers.push(headerName);
-    rowValues.push(value);
-  } else {
-    rowValues[idx] = value;
-  }
-}
-
-function findHeaderIndex(headers, name) {
-  var target = name.toString().trim().toLowerCase();
-  for (var i = 0; i < headers.length; i++) {
-    if (headers[i] && headers[i].toString().trim().toLowerCase() === target) {
-      return i;
-    }
-  }
-  return -1;
 }
 
 function jsonResponse(obj) {
