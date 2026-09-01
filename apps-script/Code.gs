@@ -77,7 +77,7 @@ function handleSubmission(data) {
 
   var priorityLabel = PRIORITY_LABELS[data.priority] || data.priority;
 
-  var row = sheet.getLastRow() + 1;
+  var row = getNextRow(sheet);
   sheet.getRange(row, FIELD_TO_COLUMN.briefDate).setValue(data.briefDate);
   sheet.getRange(row, FIELD_TO_COLUMN.dueDate).setValue(data.dueDate);
   sheet.getRange(row, FIELD_TO_COLUMN.priority).setValue(priorityLabel);
@@ -86,6 +86,32 @@ function handleSubmission(data) {
   sheet.getRange(row, FIELD_TO_COLUMN.requesterName).setValue(data.requesterName);
 
   return { tab: tabName };
+}
+
+// Appends right after the last row that actually has data in one of the
+// columns the form writes to, ignoring unrelated columns (C, H, I, ...)
+// that may hold data further down and would otherwise push new rows way
+// past the real last task.
+function getNextRow(sheet) {
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 1) return 2;
+
+  var cols = Object.keys(FIELD_TO_COLUMN).map(function (key) {
+    return FIELD_TO_COLUMN[key];
+  });
+  var minCol = Math.min.apply(null, cols);
+  var maxCol = Math.max.apply(null, cols);
+  var values = sheet.getRange(1, minCol, lastRow, maxCol - minCol + 1).getValues();
+
+  for (var r = values.length - 1; r >= 0; r--) {
+    for (var i = 0; i < cols.length; i++) {
+      var cellValue = values[r][cols[i] - minCol];
+      if (cellValue !== '' && cellValue !== null) {
+        return r + 2; // r is 0-indexed from row 1, so sheet row is r+1; next row is r+2
+      }
+    }
+  }
+  return 2; // header only, no data yet in the tracked columns
 }
 
 function jsonResponse(obj) {
