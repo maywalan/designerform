@@ -11,7 +11,7 @@ var DESIGNER_TABS = {
   'Matach (May)': 'Matach (May)',
   'Kittipat (Aun)': 'Kittipat (Aun)',
   'Apapan (Fuang)': 'Apapan (Fuang)',
-  'Video Team (Dear, Gong)': 'Video Team (Dear, Gong)',
+  'Video Team (Dear, Gong)': 'Video Team (Dear,Gong)',
   'Rinlada (Sense)': 'Rinlada (Sense)'
 };
 
