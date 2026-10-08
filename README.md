@@ -16,7 +16,7 @@ appended as a new row directly onto the assigned designer's tab in the
 | Priority (High/Medium/Low) | D — Priority, written as "High (1-2 day)" / "Medium (3-4 day)" / "Low (5 day+)" |
 | Project name       | E — Task            |
 | Details             | F — Description     |
-| Format (radio list, "Others" is free text) | G — Format |
+| Format (checkboxes, multiple allowed; "Others" is free text) | G — Format, selections joined with ", " |
 | Requested by (name) | H — PIC             |
 | PIC (designer)      | *not written* — only selects which tab the row goes to |
 
