@@ -8,20 +8,18 @@
   const today = new Date();
   briefDateInput.value = today.toISOString().slice(0, 10);
 
-  // "Others" format option enables its text input, and disables/clears it
-  // again if a different option is picked.
+  // Ticking "Others" enables its text input; unticking it disables and
+  // clears it again. Other format checkboxes don't affect it.
   const formatOtherInput = document.getElementById("formatOther");
-  const formatOthersRadio = document.getElementById("formatOthersRadio");
-  document.querySelectorAll('input[name="format"]').forEach(function (radio) {
-    radio.addEventListener("change", function () {
-      const isOthers = formatOthersRadio.checked;
-      formatOtherInput.disabled = !isOthers;
-      if (isOthers) {
-        formatOtherInput.focus();
-      } else {
-        formatOtherInput.value = "";
-      }
-    });
+  const formatOthersCheckbox = document.getElementById("formatOthersCheckbox");
+  formatOthersCheckbox.addEventListener("change", function () {
+    const isOthers = formatOthersCheckbox.checked;
+    formatOtherInput.disabled = !isOthers;
+    if (isOthers) {
+      formatOtherInput.focus();
+    } else {
+      formatOtherInput.value = "";
+    }
   });
 
   function showAlert(message, type) {
@@ -50,19 +48,23 @@
       return;
     }
 
-    const formatChoice = document.querySelector('input[name="format"]:checked');
-    if (!formatChoice) {
-      showAlert("Please select a format.", "error");
+    const formatChoices = Array.from(
+      document.querySelectorAll('input[name="format"]:checked')
+    );
+    if (formatChoices.length === 0) {
+      showAlert("Please select at least one format.", "error");
       return;
     }
-    const format =
-      formatChoice.value === "Others"
+    const formats = formatChoices.map(function (choice) {
+      return choice.value === "Others"
         ? formatOtherInput.value.trim()
-        : formatChoice.value;
-    if (!format) {
+        : choice.value;
+    });
+    if (formats.indexOf("") !== -1) {
       showAlert("Please specify the format.", "error");
       return;
     }
+    const format = formats.join(", ");
 
     if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("PASTE_YOUR") === 0) {
       showAlert(

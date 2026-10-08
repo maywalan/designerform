@@ -107,6 +107,12 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(43, 89, 255, 0.15);
 }
 
+.hint {
+  font-weight: 400;
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;
@@ -122,7 +128,8 @@ select:focus {
   cursor: pointer;
 }
 
-.radio-option input[type="radio"] {
+.radio-option input[type="radio"],
+.radio-option input[type="checkbox"] {
   width: auto;
   margin: 0;
 }
